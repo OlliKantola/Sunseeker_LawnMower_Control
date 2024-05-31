@@ -27,7 +27,13 @@ This command will redirect MQTT traffic from the Sunseeker lawn mower at IP addr
 
 ## MQTT Commands
 
-Below are the MQTT commands used to control and query the status of these lawn mower robots.
+Below are the MQTT commands used to control and query the status of these lawn mower robots. Message payload is in JSON format.
+
+Command Topic:\
+**/device/{deviceID}/get**
+
+Response Topic:\
+**/device/{deviceID}/update**
 
 ### Basic Commands
 
@@ -56,43 +62,146 @@ Below are the MQTT commands used to control and query the status of these lawn m
   ```
 - **Query Robot Status**
   ```
-  /device/{deviceID}/get, Message: {"cmd":201}
+  {"cmd":201}
+
+  {
+    "cmd": 501,
+    "mode": 0,
+    "power": 100,
+    "station": true,
+    "on_area": 4005,
+    "on_min": 6224,
+    "total_min": 77501,
+    "cur_min": 0,
+    "cur_area": 0,
+    "wifi_lv": 3
+  }
   ```
+  
 - **Query Robot Name**
   ```
-  /device/{deviceID}/get, Message: {"cmd":202}
+  {"cmd":202}
+
+  {"cmd":502,"name":"MyMower"}
   ```
 - **Query Cutting Schedule**
   ```
-  /device/{deviceID}/get, Message: {"cmd":203}
+  {"cmd":203}
+
+  {
+    "cmd": 503,
+    "auto": false,
+    "Sun": {
+      "slice": [
+        {
+          "start": 540,
+          "end": 900
+        }
+      ],
+      "Trimming": true
+    },
+    "Mon": {},
+    "Tue": {},
+    "Wed": {},
+    "Thu": {},
+    "Fri": {},
+    "Sat": {}
+  }
   ```
 - **Query Device Password**
   ```
-  /device/{deviceID}/get, Message: {"cmd":204}
+  {"cmd":204}
+
+  {"cmd":504,"passwd":0}
   ```
 - **Query Rain Delay**
   ```
-  /device/{deviceID}/get, Message: {"cmd":205}
+  {"cmd":205}
+
+  {
+    "cmd": 505,
+    "rain_en": true,
+    "rain_status": 0,
+    "rain_delay_set": 180,
+    "rain_delay_left": 180
+  }
   ```
 - **Query Language**
   ```
-  /device/{deviceID}/get, Message: {"cmd":206}
+  {"cmd":206}
+
+  {"cmd":506,"language":0}
   ```
 - **Query Starting Points**
   ```
-  /device/{deviceID}/get, Message: {"cmd":207}
+  {"cmd":207}
+
+  {
+    "cmd": 507,
+    "mul_en": true,
+    "mul_auto": false,
+    "mul_zon1": 0,
+    "mul_zon2": 25,
+    "mul_zon3": 50,
+    "mul_zon4": 75
+  }
   ```
 - **Query Robot Hardware Info**
   ```
-  /device/{deviceID}/get, Message: {"cmd":208}
+  {"cmd":208}
+
+  {
+    "cmd": 508,
+    "sn": "XXXXXXXXXXXXXXXXXXXX",
+    "model": "RMA501M20V",
+    "avail": "market_active",
+    "version": 23202,
+    "name": "MyMower",
+    "mb": {
+      "hv": 22100,
+      "sv": 22905
+    },
+    "bb": {
+      "hv": 210700,
+      "sv": 40901
+    },
+    "db": {
+      "hv": 60300,
+      "sv": 61107
+    },
+    "lb": {
+      "hv": 0,
+      "sv": 0
+    },
+    "btl": {
+      "sv": 40501
+    }
+  }
   ```
 - **Query Ultrasonic**
+  My robot doesn't have ultrasonic sensor.
   ```
-  /device/{deviceID}/get, Message: {"cmd":209}
+  {"cmd":209}
+
+  {
+    "cmd": 515,
+    "ultra_en": 0,
+    "ultra_lv": 0
+  }
   ```
 - **Query LEDs**
   ```
-  /device/{deviceID}/get, Message: {"cmd":210}
+  My robot doesn't have LED "driving" lights.
+  {"cmd":210}
+
+  {
+    "cmd": 516,
+    "led_en": 0,
+    "led_mode": 0,
+    "led_start": 0,
+    "led_end": 0,
+    "led_night": 0
+  }
   ```
 
 ### Set Commands
@@ -107,15 +216,29 @@ Below are the MQTT commands used to control and query the status of these lawn m
   ```
 - **Set Rain Delay**
   ```
-  /device/{deviceID}/get, Message: {"cmd":105,"rain_delay_set":181,"rain_en":true}
+  {"cmd":105,"rain_delay_set":181,"rain_en":true}
+
+  {"cmd":400,"command":105,"result":true}
+  {"cmd":509,"lv":3,"log":"I/rain [Fri May 31 21:31:13 2024] (259)set rain config success, enable=1, rain delay =181minutes\n"}
+  {"cmd":509,"lv":3,"log":"I/userset [Fri May 31 21:31:13 2024] (893)set rain enable = 1, delay=181 success\n"}
+  {"cmd":505,"rain_en":true,"rain_status":0,"rain_delay_set":181,"rain_delay_left":181}
   ```
 - **Set Device Name**
   ```
-  /device/{deviceID}/get, Message: {"cmd":107,"rename":"rotisko"}
+  {"cmd":107,"rename":"rotisko"}
+
+  {"cmd":400,"command":107,"result":true}
+  {"cmd":509,"lv":3,"log":"I/userset [Fri May 31 21:23:26 2024] (980)set name=rotisko success\n"}
   ```
 - **Set Starting Points**
   ```
-  /device/{deviceID}/get, Message: {"cmd":108,"mul_Mode":0,"mul_auto":false,"mul_en":true,"mul_meter1":0,"mul_meter2":0,"mul_meter3":0,"mul_meter4":0,"mul_pro1":25,"mul_pro2":25,"mul_pro3":25,"mul_pro4":25,"mul_zon1":43,"mul_zon2":34,"mul_zon3":0,"mul_zon4":95}
+  {"cmd":108,"mul_Mode":0,"mul_auto":false,"mul_en":true,"mul_meter1":0,"mul_meter2":0,"mul_meter3":0,"mul_meter4":0,"mul_pro1":25,"mul_pro2":25,"mul_pro3":25,"mul_pro4":25,"mul_zon1":43,"mul_zon2":34,"mul_zon3":0,"mul_zon4":95}
+
+  {"cmd":400,"command":108,"result":true}
+  {"cmd":507,"mul_en":true,"mul_auto":false,"mul_zon1":0,"mul_zon2":25,"mul_zon3":50,"mul_zon4":75}
+  {"cmd":509,"lv":3,"log":"I/multizone [Fri May 31 21:25:45 2024] (470)update multizone border length=0mm, enable zone and disable auto, point1=1000, 2=1000, 3=1000, 4=1000\n"}
+  {"cmd":509,"lv":3,"log":"I/multizone [Fri May 31 21:25:45 2024] (211)set multizone success, multizone enable=1, auto enable=0\n"}
+  {"cmd":509,"lv":3,"log":"I/userset [Fri May 31 21:25:45 2024] (938)set multizone success, enable=1, auto=0, scale0=0, 1=25,2=50, 3=75\n"}
   ```
 
 ### Miscellaneous Commands
@@ -126,7 +249,10 @@ Below are the MQTT commands used to control and query the status of these lawn m
   ```
 - **Reset Device Password**
   ```
-  /device/{deviceID}/get, Message: {"cmd":112}
+  {"cmd":112}
+
+  {"cmd":400,"command":112,"result":true}
+  {"cmd":509,"lv":3,"log":"I/userset [Fri May 31 21:46:55 2024] (1210)reset pwd success\n"}
   ```
 - **Restart Data Manager Service**
   ```
